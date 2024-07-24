@@ -1,15 +1,34 @@
-Source: template-repository
-Section: unknown
+Source: tcpdump
+Section: net
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Maintainer: Romain Francoise <rfrancoise@debian.org>
+Build-Depends: debhelper-compat (= 13),
+               dh-apparmor,
+               dpkg-dev (>= 1.16.1~),
+               libpcap0.8-dev (>= 1.9.1),
+               libssl-dev
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://www.tcpdump.org/
+Vcs-Browser: https://salsa.debian.org/rfrancoise/tcpdump
+Vcs-Git: https://salsa.debian.org/rfrancoise/tcpdump.git
 
-Package: template-repository
+Package: tcpdump
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Depends: adduser,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: apparmor-profiles-extra (<< 1.12~)
+Replaces: apparmor-profiles-extra (<< 1.12~)
+Suggests: apparmor (>= 2.3)
+Multi-Arch: foreign
+Description: command-line network traffic analyzer
+ This program allows you to dump the traffic on a network. tcpdump
+ is able to examine IPv4, ICMPv4, IPv6, ICMPv6, UDP, TCP, SNMP, AFS
+ BGP, RIP, PIM, DVMRP, IGMP, SMB, OSPF, NFS and many other packet
+ types.
+ .
+ It can be used to print out the headers of packets on a network
+ interface, filter packets that match a certain expression. You can
+ use this tool to track down network problems, to detect attacks
+ or to monitor network activities.

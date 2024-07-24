@@ -1,0 +1,5 @@
+drop-privs-after-opening-savefile.diff
+drop-privs-silently.diff
+drop-privs-only-if-non-root.diff
+install.diff
+man-section.diff

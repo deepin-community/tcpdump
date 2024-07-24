@@ -1,0 +1,42 @@
+From dec0e5183c026ccef342ba3a877c13c1cdab61d5 Mon Sep 17 00:00:00 2001
+From: Martin Willi <martin@strongswan.org>
+Date: Tue, 12 Nov 2019 13:43:31 +0100
+Subject: [PATCH] Skip privilege dropping when using -Z root on --with-user
+ builds
+Forwarded: not-needed
+
+Distributions which started building --with-user to switch to an
+unpriviliged user claim that the old behavior of running under root
+can be restored by passing "-Z root" on the command line. However,
+doing so is different from not using --with-user, as tcpdump still
+drops privileges and sets supplementary user groups.
+
+In Linux containers using user namespaces with an in-container root
+user mapped to an unprivileged external user, calling setgroups() is
+usually denied, as it would allow that unprivileged user to leave
+groups (see user_namespaces(7) for details). Passing "-Z root" on
+a --with-user build still goes through initgroups() and therefore
+setgroups(), which will fail in such a container environment. This
+makes tcpdump builds using --with-user effectively unusable in such
+containers.
+
+Adjust the "-Z root" fallback to skip any privilege dropping and
+supplementary group setup, making it identical to builds not using
+--with-user.
+---
+ tcpdump.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tcpdump.c b/tcpdump.c
+index 219ac2a2b..36ba60c17 100644
+--- a/tcpdump.c
++++ b/tcpdump.c
+@@ -2078,6 +2078,8 @@ main(int argc, char **argv)
+ 		/* Run with '-Z root' to restore old behaviour */
+ 		if (!username)
+ 			username = WITH_USER;
++		else if (strcmp(username, "root") == 0)
++			username = NULL;
+ 	}
+ #endif
+ 
