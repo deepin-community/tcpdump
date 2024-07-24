@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    purge)
+	userdel tcpdump >/dev/null 2>&1 || true
+	groupdel tcpdump >/dev/null 2>&1 || true
+	;;
+esac
+
+#DEBHELPER#
